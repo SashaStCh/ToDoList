@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ToDoList.Models.Task>
+<script>
+    async function getFolders() {
+        // отправляет запрос и получаем ответ
+        const response = await fetch("/folder/getfolders", {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        });
+        // если запрос прошел нормально
+        if (response.ok === true) {
+            // получаем данные
+            const folders = await response.json();
+            console.log(folders);
+            const rows = document.querySelector("tbody");
+            // добавляем полученные элементы в таблицу
+            folders.result.forEach(folder => rows.append(row(folder)));
+        }
+    }
+
+    function row(folder) {
+
+        const tr = document.createElement("tr");
+        tr.setAttribute("data-rowid", folder.id);
+
+        const nameTd = document.createElement("td");
+        nameTd.append(folder.name);
+        tr.append(nameTd);
+
+        return tr;
+    }
+
+    getFolders();
+</script>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <button>Add New Folder</button>
+            <button>Remove Folder</button>
+        </div>
+        <div class="col">
+            <button>Add New Task</button>
+            <button>Select All</button>
+            <button>Flag</button>
+            <button>Delete Selected</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <table>
+                <thead><tr><th>Папки</th></tr></thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            @foreach (var item in Model)
+            {
+                <input type="text" id="myTextBox" value="@item.Text"><br />
+            }
+        </div>
+    </div>
+</div>
