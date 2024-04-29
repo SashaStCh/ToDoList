@@ -49,7 +49,6 @@ namespace ToDoList.Controllers
         [HttpGet("GetNextFolderId")]
         public int GetNextFolderId()
         {
-            Console.WriteLine(NextFolderID);
             return NextFolderID;
         }
 
