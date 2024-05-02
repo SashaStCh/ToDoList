@@ -1,40 +1,8 @@
-﻿@model IEnumerable<ToDoList.Models.Task>
-<script>
-    async function getFolders() {
-        // отправляет запрос и получаем ответ
-        const response = await fetch("/folder/getfolders", {
-            method: "GET",
-            headers: { "Accept": "application/json" }
-        });
-        // если запрос прошел нормально
-        if (response.ok === true) {
-            // получаем данные
-            const folders = await response.json();
-            console.log(folders);
-            const rows = document.querySelector("tbody");
-            // добавляем полученные элементы в таблицу
-            folders.result.forEach(folder => rows.append(row(folder)));
-        }
-    }
-
-    function row(folder) {
-
-        const tr = document.createElement("tr");
-        tr.setAttribute("data-rowid", folder.id);
-
-        const nameTd = document.createElement("td");
-        nameTd.append(folder.name);
-        tr.append(nameTd);
-
-        return tr;
-    }
-
-    getFolders();
-</script>
+﻿@model IEnumerable<ToDoList.Models.Folder>
 <div class="container">
     <div class="row">
         <div class="col">
-            <button>Add New Folder</button>
+            <button id="AddNewFolder">Add New Folder</button>
             <button>Remove Folder</button>
         </div>
         <div class="col">
@@ -46,17 +14,44 @@
     </div>
     <div class="row">
         <div class="col">
-            <table>
-                <thead><tr><th>Папки</th></tr></thead>
-                <tbody>
-                </tbody>
-            </table>
+            <input type="text" display="block" id="FolderName" />
+            <input type="button" value="Create" id="CreateFolder" />
+            <p>Папки</p>
+            <ul id="FoldersList">
+                @foreach (var item in Model)
+                {
+                    <li>
+                        <button id="Folder-@item.Id">@item.Name</button>
+                    </li>
+                }
+            </ul>
         </div>
         <div class="col">
-            @foreach (var item in Model)
-            {
-                <input type="text" id="myTextBox" value="@item.Text"><br />
-            }
         </div>
     </div>
 </div>
+<script>
+    $("#CreateFolder").click(function () {
+        let folderData = {
+            name: $("#FolderName").val(),
+        }
+        $.ajax({
+            type: "post",
+            url: "api/Folder",
+            data: folderData,
+            datatype: "json",
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("ajax error textStatus=" + textStatus + ", errorThrown=" + errorThrown);
+            },
+            success: function (jsonData) {
+                console.log(JSON.stringify(jsonData));
+                var li = document.createElement("li");
+                var button = document.createElement("button");
+                button.id = "Folder" + jsonData.id;
+                button.innerText = jsonData.name;
+                li.appendChild(button);
+                $("#FoldersList").append(li);
+            }
+        })
+    })
+</script>

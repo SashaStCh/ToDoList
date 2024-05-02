@@ -19,7 +19,7 @@ namespace ToDoList.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await db.Task.ToListAsync());
+            return View(await db.Folder.ToListAsync());
         }
     }
 }
