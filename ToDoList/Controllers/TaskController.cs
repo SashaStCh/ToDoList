@@ -35,6 +35,18 @@ namespace ToDoList.Controllers
             return Ok(task);
         }
 
+        [HttpGet("FromFolder/{id}")]
+        public IActionResult GetFromFolder(int id)
+        {
+            var tasks = db.Task.Where(a => a.FolderId == id).ToList();
+            if (tasks == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(tasks);
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
