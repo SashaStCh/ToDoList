@@ -14,8 +14,8 @@
     </div>
     <div class="row">
         <div class="col">
-            <input type="text" display="block" id="FolderName" />
-            <input type="button" value="Create" id="CreateFolder" />
+            <input style="display:none" type="text" id="FolderName" />
+            <button style="display:none" id="CreateFolder">Create</button>
             <p>Папки</p>
             <ul id="FoldersList">
                 @foreach (var item in Model)
@@ -51,7 +51,14 @@
                 button.innerText = jsonData.name;
                 li.appendChild(button);
                 $("#FoldersList").append(li);
+                $("#FolderName").toggle();
+                $("#CreateFolder").toggle();
             }
         })
+    })
+
+    $("#AddNewFolder").click(function () {
+        $("#FolderName").toggle();
+        $("#CreateFolder").toggle();
     })
 </script>
