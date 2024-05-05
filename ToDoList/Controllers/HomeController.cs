@@ -17,9 +17,10 @@ namespace ToDoList.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int folderId)
         {
-            return View(await db.Folder.ToListAsync());
+            var tasks = db.Task.Where(a => a.FolderId == folderId);
+            return View(tasks);
         }
     }
 }
