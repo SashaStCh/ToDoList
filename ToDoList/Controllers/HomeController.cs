@@ -20,7 +20,13 @@ namespace ToDoList.Controllers
         public IActionResult Index(int folderId)
         {
             var tasks = db.Task.Where(a => a.FolderId == folderId);
-            return View(tasks);
+            var folders = db.Folder.ToList();
+            IndexViewModel viewModel = new IndexViewModel
+            {
+                Tasks = tasks,
+                Folders = folders
+            };
+            return View(viewModel);
         }
     }
 }

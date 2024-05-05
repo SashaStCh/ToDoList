@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ToDoList.Models.Task>
+﻿@model ToDoList.Models.IndexViewModel
 
 <div class="container">
     <div class="row">
@@ -19,17 +19,17 @@
             <button style="display:none" id="CreateFolder">Create</button>
             <p>Папки</p>
             <ul id="FoldersList">
-@*                 @foreach (var item in Model)
+                @foreach (var item in Model.Folders)
                 {
                     <li>
                         <button id="Folder-@item.Id" data-id="@item.Id" onclick="getTasks(this)">@item.Name</button>
                     </li>
-                } *@
+                }
             </ul>
         </div>
         <div class="col">
             <ul id="TasksList">
-                @foreach (var item in Model)
+                @foreach (var item in Model.Tasks)
                 {
                     <li>
                         <input type="text" id="Folder-@item.Id" data-id="@item.Id" value="@item.Text"/>
@@ -40,53 +40,37 @@
     </div>
 </div>
 <script>
+
     $("#CreateFolder").click(function () {
         let folderData = {
             name: $("#FolderName").val(),
         }
         $.ajax({
             type: "post",
-            url: "api/Folder",
+            url: "/api/Folder",
             data: folderData,
             datatype: "json",
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("ajax error textStatus=" + textStatus + ", errorThrown=" + errorThrown);
             },
             success: function (jsonData) {
-                console.log(JSON.stringify(jsonData));
-                var li = document.createElement("li");
-                var button = document.createElement("button");
-                button.id = "Folder-" + jsonData.id;
-                button.innerText = jsonData.name;
-                li.appendChild(button);
-                $("#FoldersList").append(li);
+                renderFolderButton(jsonData);
                 $("#FolderName").toggle();
                 $("#CreateFolder").toggle();
             }
         })
     })
 
-    function getTasks(folderButton) {
-        $.ajax({
-            type: "get",
-            url: "api/Task/FromFolder/" + folderButton.dataset.id,
-            datatype: "json",
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert("ajax error textStatus=" + textStatus + ", errorThrown=" + errorThrown);
-            },
-            success: function (jsonData) {
-                var li = document.createElement("li");
-                var input = document.createElement("input");
-                input.id = "Task-" + jsonData.id;
-                input.value = jsonData.text;
-                li.appendChild(input);
-                $("#TasksList").append(li);
-            }
-        })
-    }
-
     $("#AddNewFolder").click(function () {
         $("#FolderName").toggle();
         $("#CreateFolder").toggle();
     })
+    function renderFolderButton(folder) {
+        var li = document.createElement("li");
+        var button = document.createElement("button");
+        button.id = "Folder-" + folder.id;
+        button.innerText = folder.name;
+        li.appendChild(button);
+        $("#FoldersList").append(li);
+    }
 </script>
